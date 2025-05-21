@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     ActivityIndicator,
     Text,
@@ -21,7 +21,8 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [loginType, setLoginType] = useState("phone");
+    const [loginType, setLoginType] = useState("email");
+    const loginTypeRef = useRef(null);
 
     useEffect(() => {
         const getToken = async () => {
@@ -71,13 +72,18 @@ export default function Login() {
     };
 
     const handleLoginType = () => {
-        if (loginType === "phone") {
-            setLoginType("email");
-        } else {
-            setLoginType("phone");
-        }
-        setEmail("");
-        setPhone("");
+        // Blur the input first
+        loginTypeRef.current?.blur();
+        setTimeout(() => {
+            setLoginType(loginType === "phone" ? "email" : "phone");
+            setEmail("");
+            setPhone("");
+
+            // Optionally, refocus after keyboardType changes
+            setTimeout(() => {
+                loginTypeRef.current?.focus();
+            }, 100);
+        }, 100);
     };
 
     return (
@@ -104,6 +110,7 @@ export default function Login() {
                                         : "Email"}
                                 </Text>
                                 <TextInput
+                                    ref={loginTypeRef}
                                     className="w-full h-16 px-4 bg-gray-50 bg-opacity-10 rounded-xl text-base text-gray-900 border-solid border-2 border-gray-200"
                                     placeholder={
                                         loginType === "phone"
