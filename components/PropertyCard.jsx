@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import formatCurrency from '../src/helpers/helpers';
+import Icon from "../assets/icon.png"
 
 const PropertyCard = ({ property, onPress }) => {
     return (
@@ -8,51 +9,43 @@ const PropertyCard = ({ property, onPress }) => {
             {/* Gambar & badge */}
             <View className="relative">
                 <Image
-                    source={{ uri: property.image }}
+                    source={{ uri: property.image?.trim() ? property.image : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" }}
                     style={{ width: '100%', height: 120 }}
                     className="rounded-t-2xl"
                     resizeMode="cover"
                 />
                 {/* Logo pojok kiri atas */}
                 <View className="absolute top-2 left-2 bg-white/80 px-2 py-0.5 rounded">
-                    <Text className="text-xs font-bold text-gray-700">Koskita</Text>
+                    <View className="flex-row justify-center items-center gap-1">
+                        <Image
+                            source={Icon}
+                            style={{ width: 10, height: 10, borderRadius: 20 }}
+                        />
+                        <Text className="text-xs font-bold text-gray-700">Koskita</Text>
+                    </View>
                 </View>
                 {/* Icon love pojok kanan atas */}
                 <TouchableOpacity className="absolute top-2 right-2 bg-white/80 p-1 rounded-full">
                     <Ionicons name="heart-outline" size={18} color="#666" />
                 </TouchableOpacity>
                 {/* Badge 360 & sisa kamar */}
-                <View className="absolute bottom-2 left-2 flex-row items-center space-x-1">
-                    <View className="bg-black/60 px-2 py-0.5 rounded flex-row items-center">
-                        <Ionicons name="camera" size={12} color="#fff" />
-                        <Text className="text-xs text-white ml-1">360</Text>
-                    </View>
-                </View>
                 <View className="absolute bottom-2 right-2 bg-yellow-400 px-2 py-0.5 rounded">
-                    <Text className="text-xs font-semibold text-gray-800">Sisa {property.stock_kamar} kamar</Text>
+                    <Text className="text-xs font-semibold text-gray-800">Sisa {property.stockKamar} kamar</Text>
                 </View>
             </View>
             {/* Konten */}
             <View className="p-3">
-                <Text className="text-xs text-gray-500 mb-1">Coliving</Text>
                 <Text className="text-base font-bold text-gray-900 dark:text-white" numberOfLines={2}>
                     {property.name}
                 </Text>
 
                 {/* Lokasi */}
-                <View className="flex-row items-center mb-1">
+                <View className="flex-row items-center gap-1 mb-1">
                     <Ionicons name="location-outline" size={14} color="#666" />
-                    <Text className="text-xs text-gray-600">{property.address}</Text>
-                </View>
-                {/* Harga coret */}
-                <View className="flex-row items-center">
-                    <Text className="text-xs text-gray-400 line-through mr-1">{formatCurrency(property.price * 107 / 100)}</Text>
+                    <Text numberOfLines={1} className="text-xs text-gray-600">{property.address}</Text>
                 </View>
                 {/* Harga promo */}
                 <View className="flex-row items-center mb-1">
-                    <View className="bg-red-100 px-1 rounded mr-1">
-                        <Text className="text-xs text-red-600 font-bold">-7%</Text>
-                    </View>
                     <Text className="text-lg font-bold text-red-600">{formatCurrency(property.price)}</Text>
                     <Text className="text-xs text-gray-600 ml-1">/bulan</Text>
                 </View>

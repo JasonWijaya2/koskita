@@ -1,18 +1,33 @@
-import { View, TextInput, ScrollView, Text, Image } from "react-native";
+import { View, TextInput, ScrollView, Text, Image, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import * as Linking from "expo-linking";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import PropertyCard from "../../../components/PropertyCard";
-import properties from "../../db/kosan.json";
 import Icon from "../../../assets/icon.png";
 import { getAccessToken } from "../../lib/auth";
+import api from "../../lib/api";
 
 export default function Index() {
     const [search, setSearch] = useState("");
-    const filteredProperties = properties.filter(
+    const [listKos, setListKos] = useState([]);
+    const filteredProperties = listKos.filter(
         (item) =>
             item.name && item.name.toLowerCase().includes(search.toLowerCase())
     );
+
+    useEffect(() => {
+        const getKos = async () => {
+            try {
+                const response = await api.get("/api/kos");
+                setListKos(response.data.data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        getKos();
+    }, []);
 
     useEffect(() => {
         const getToken = async () => {
@@ -78,6 +93,19 @@ export default function Index() {
                     </View>
                 ))}
             </ScrollView>
+            <TouchableOpacity
+                className="absolute bottom-4 right-4"
+                onPress={() => {
+                    Linking.openURL(
+                        `https://wa.me/6282338303655`
+                    );
+                }}
+            >
+                <View className="w-16 h-16 bg-[#22c55e] rounded-full items-center justify-center">
+                    <FontAwesome name="whatsapp" size={30} color="#fff" />
+                </View>
+
+            </TouchableOpacity>
         </View>
     );
 }

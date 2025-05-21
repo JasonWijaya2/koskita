@@ -6,15 +6,61 @@ import {
     ScrollView,
     TouchableOpacity,
     Dimensions,
+    ActivityIndicator,
 } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
-import properties from "../../db/kosan.json";
 import * as Linking from "expo-linking";
+import { useEffect, useState } from "react";
+import api from "../../lib/api";
+import Icon from "../../../assets/icon.png"
 
 export default function Detail() {
     const { id } = useLocalSearchParams();
-    const property = properties.find((item) => item.id === id);
+    const [property, setProperty] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [city, setCity] = useState("");
+
+    useEffect(() => {
+        const fetchProperty = async () => {
+            try {
+                const response = await api.get(`/api/kos/${id}`);
+                setProperty(response.data.data);
+            } catch (error) {
+                setProperty(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProperty();
+    }, [id]);
+
+    useEffect(() => {
+        const fetchCity = async () => {
+            if (
+                property &&
+                property.latitude &&
+                property.longitude
+            ) {
+                try {
+                    const res = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${property.latitude}&lon=${property.longitude}&zoom=10&addressdetails=1`
+                    );
+                    const data = await res.json();
+                    setCity(
+                        data.address?.city ||
+                        data.address?.town ||
+                        data.address?.village ||
+                        data.address?.county ||
+                        ""
+                    );
+                } catch (e) {
+                    setCity("");
+                }
+            }
+        };
+        fetchCity();
+    }, [property]);
 
     const handleWhatsapp = () => {
         Linking.openURL(
@@ -22,10 +68,94 @@ export default function Detail() {
         );
     };
 
+    if (loading) {
+        return (
+            <View className="flex-1 bg-white dark:bg-[#25292e]">
+                <ScrollView
+                    contentContainerStyle={{ paddingBottom: 90 }}
+                    className="flex-1"
+                    showsVerticalScrollIndicator={false}
+                >
+                    {/* Skeleton Gambar utama */}
+                    <View className="relative">
+                        <View
+                            style={{ width: "100%", height: 180, backgroundColor: "#e5e7eb" }}
+                            className="rounded"
+                        />
+                        <View className="absolute top-3 left-3 flex-row space-x-2">
+                            <View className="bg-white/80 p-2 rounded-full w-8 h-8" />
+                        </View>
+                        <View className="absolute top-3 right-3 flex-row space-x-2 gap-2">
+                            <View className="bg-white/80 p-2 rounded-full w-8 h-8" />
+                            <View className="bg-white/80 p-2 rounded-full w-8 h-8" />
+                            <View className="bg-white/80 p-2 rounded-full w-8 h-8" />
+                        </View>
+                        <View className="absolute bottom-3 left-3 bg-red-300 px-6 py-2 rounded" />
+                    </View>
+
+                    {/* Skeleton Gallery */}
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        className="flex-row px-3 py-2 space-x-2"
+                    >
+                        {[...Array(4)].map((_, idx) => (
+                            <View
+                                key={idx}
+                                style={{ width: 80, height: 60, backgroundColor: "#e5e7eb" }}
+                                className="rounded mr-2"
+                            />
+                        ))}
+                    </ScrollView>
+
+                    {/* Skeleton Konten */}
+                    <View className="px-4 pb-4">
+                        <View style={{ height: 24, backgroundColor: "#e5e7eb", borderRadius: 6, marginTop: 8, marginBottom: 8 }} />
+                        <View style={{ height: 16, backgroundColor: "#e5e7eb", borderRadius: 6, marginBottom: 8, width: 180 }} />
+                        <View style={{ height: 20, backgroundColor: "#e5e7eb", borderRadius: 6, marginBottom: 8, width: 120 }} />
+                        <View style={{ height: 32, backgroundColor: "#e5e7eb", borderRadius: 6, marginBottom: 8, width: 200 }} />
+                        <View style={{ height: 12, backgroundColor: "#e5e7eb", borderRadius: 6, marginBottom: 8, width: 140 }} />
+
+                        {/* Skeleton Map */}
+                        <View className="mt-4">
+                            <View
+                                style={{ height: 140, backgroundColor: "#e5e7eb", borderRadius: 12, marginBottom: 8 }}
+                            />
+                            <View style={{ height: 12, backgroundColor: "#e5e7eb", borderRadius: 6, width: 180 }} />
+                        </View>
+
+                        {/* Skeleton Tata Tertib */}
+                        <View className="mt-4 space-y-2">
+                            {[...Array(4)].map((_, idx) => (
+                                <View
+                                    key={idx}
+                                    style={{ height: 14, backgroundColor: "#e5e7eb", borderRadius: 6, marginBottom: 6, width: "90%" }}
+                                />
+                            ))}
+                        </View>
+                    </View>
+                </ScrollView>
+                {/* Skeleton Tombol aksi sticky */}
+                <View
+                    className="flex-row space-x-2 px-4 py-3 bg-white dark:bg-[#25292e] border-t border-gray-200 dark:border-gray-700"
+                    style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                    }}
+                >
+                    <View className="flex-1 bg-gray-200 py-3 rounded-xl" />
+                    <View className="flex-1 bg-gray-200 py-3 rounded-xl ml-2" />
+                </View>
+            </View>
+        );
+    }
+
     if (!property) {
         return (
             <View className="flex-1 items-center justify-center">
-                <Text>Kos tidak ditemukan</Text>
+                <Text className="text-xl font-bold text-red-500">Error Not Found</Text>
             </View>
         );
     }
@@ -40,7 +170,7 @@ export default function Detail() {
                 {/* Gambar utama */}
                 <View className="relative">
                     <Image
-                        source={{ uri: property.image }}
+                        source={{ uri: property.image?.trim() ? property.image : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" }}
                         style={{ width: "100%", height: 180 }}
                         resizeMode="cover"
                     />
@@ -76,11 +206,15 @@ export default function Detail() {
                             <MaterialIcons name="menu" size={20} color="#222" />
                         </TouchableOpacity>
                     </View>
-                    {/* Badge flash sale */}
-                    <View className="absolute bottom-3 left-3 bg-red-600 px-2 py-1 rounded">
-                        <Text className="text-xs text-white font-bold">
-                            FLASH SALE
-                        </Text>
+                    {/* Badge */}
+                    <View className="absolute bottom-3 left-3 bg-white/80 px-2 py-1 rounded">
+                        <View className="flex-row justify-center items-center gap-1">
+                            <Image
+                                source={Icon}
+                                style={{ width: 10, height: 10, borderRadius: 20 }}
+                            />
+                            <Text className="text-xs font-bold text-gray-700">Koskita</Text>
+                        </View>
                     </View>
                 </View>
 
@@ -109,35 +243,68 @@ export default function Detail() {
                             {property.name}
                         </Text>
                         <Text className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                            {property.address}
+                            {city}
                         </Text>
+                    </View>
 
-                        {/* Harga promo */}
-                        <View className="flex-row items-center mb-1">
-                            <View className="bg-red-100 px-1 rounded mr-1">
-                                <Text className="text-xs text-red-600 font-bold">
-                                    -7%
-                                </Text>
-                            </View>
-                            <Text className="text-base text-gray-400 line-through mr-2">
-                                Rp
-                                {property.price_before?.toLocaleString(
-                                    "id-ID"
-                                ) || "2.600.000"}
-                            </Text>
+                    {/* Section Fasilitas Bersama */}
+                    <View className="mt-4">
+                        <Text className="font-bold text-base text-xl mb-2">
+                            Fasilitas
+                        </Text>
+                        <View className="flex-row flex-wrap">
+                            {property.facilities && property.facilities.length > 0 ? (
+                                property.facilities.map((item) => (
+                                    <View
+                                        key={item.id}
+                                        className="flex-row items-center mr-6 mb-3"
+                                        style={{ minWidth: 120 }}
+                                    >
+                                        {/* Ganti icon sesuai nama fasilitas */}
+                                        {item.name === "Wifi" && (
+                                            <Ionicons name="wifi-outline" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
+                                        {item.name === "Parkir Motor" && (
+                                            <MaterialIcons name="local-parking" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
+                                        {item.name === "Ruang Tamu" && (
+                                            <FontAwesome name="bed" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
+                                        {item.name === "Cleaning" && (
+                                            <MaterialIcons name="cleaning-services" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
+                                        {item.name === "Laundry" && (
+                                            <MaterialIcons name="local-laundry-service" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
+                                        {item.name === "CCTV" && (
+                                            <MaterialIcons name="videocam" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
+                                        {item.name === "AC" && (
+                                            <Ionicons name="snow-outline" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
+                                        {item.name === "Kasur" && (
+                                            <FontAwesome name="bed" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
+                                        {/* Default icon jika tidak ada yang cocok */}
+                                        {![
+                                            "Wifi",
+                                            "Parkir Motor",
+                                            "Ruang Tamu",
+                                            "Cleaning",
+                                            "Laundry",
+                                            "CCTV",
+                                            "AC",
+                                            "Kasur"
+                                        ].includes(item.name) && (
+                                                <Ionicons name="home-outline" size={20} color="#444" style={{ marginRight: 6 }} />
+                                            )}
+                                        <Text className="text-gray-700 dark:text-gray-300">{item.name}</Text>
+                                    </View>
+                                ))
+                            ) : (
+                                <Text className="text-gray-500">Tidak ada fasilitas</Text>
+                            )}
                         </View>
-                        <Text className="text-2xl font-bold text-red-600 mb-1">
-                            Rp
-                            {property.price?.toLocaleString("id-ID") ||
-                                "2.350.000"}{" "}
-                            <Text className="text-base text-gray-700">
-                                /bulan
-                            </Text>
-                        </Text>
-                        <Text className="text-xs text-green-700 mb-2">
-                            Hemat Rp250k/bln untuk 12 bulan pertama, Rp100k/bln
-                            berikutnya
-                        </Text>
                     </View>
 
                     {/* Section Lokasi */}
@@ -147,7 +314,7 @@ export default function Detail() {
                         </Text>
                         <View
                             className="bg-gray-100 rounded-xl overflow-hidden mb-2"
-                            style={{ height: 140 }}
+                            style={{ height: 200 }}
                         >
                             <MapView
                                 style={{ flex: 1 }}
@@ -169,10 +336,11 @@ export default function Detail() {
                                     }}
                                 />
                             </MapView>
+
+                            <Text className="text-md font-semibold text-gray-700 px-2 pb-2">
+                                {property.address}
+                            </Text>
                         </View>
-                        <Text className="text-xs text-gray-700 px-2 pb-2">
-                            {property.address}
-                        </Text>
                     </View>
 
                     {/* Section Tata Tertib */}
@@ -225,7 +393,7 @@ export default function Detail() {
 
             {/* Tombol aksi sticky */}
             <View
-                className="flex-row space-x-2 px-4 py-3 bg-white dark:bg-[#25292e] border-t border-gray-200 dark:border-gray-700"
+                className="flex-col gap-2 space-x-2 px-4 py-3 bg-white dark:bg-[#25292e] border-t border-gray-200 dark:border-gray-700"
                 style={{
                     position: "absolute",
                     bottom: 0,
@@ -233,20 +401,28 @@ export default function Detail() {
                     right: 0,
                 }}
             >
-                <TouchableOpacity
-                    onPress={handleWhatsapp}
-                    className="flex-1 bg-green-100 py-3 rounded-xl items-center flex-row justify-center"
-                >
-                    <FontAwesome name="whatsapp" size={18} color="#22c55e" />
-                    <Text className="text-green-700 font-semibold ml-2">
-                        Chat Koskita
+                {/* Harga promo */}
+                <View className="flex-row items-center mb-1">
+                    <Text className="text-2xl font-bold text-red-600 mb-1">
+                        Rp
+                        {property.price?.toLocaleString("id-ID") ||
+                            "0.000.000"}{" "}
+                        <Text className="text-base text-gray-700">
+                            /bulan
+                        </Text>
                     </Text>
-                </TouchableOpacity>
-                <TouchableOpacity className="flex-1 bg-black py-3 rounded-xl items-center ml-2">
-                    <Text className="text-white font-semibold">
-                        Lihat Tipe Kamar
-                    </Text>
-                </TouchableOpacity>
+                </View>
+                <View className="flex-row">
+                    <TouchableOpacity
+                        onPress={handleWhatsapp}
+                        className="flex-1 bg-green-100 py-3 rounded-xl items-center flex-row justify-center"
+                    >
+                        <FontAwesome name="whatsapp" size={18} color="#22c55e" />
+                        <Text className="text-green-700 font-semibold ml-2">
+                            Chat Koskita Untuk Pemesanan
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
