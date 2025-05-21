@@ -1,16 +1,27 @@
 import { View, TextInput, ScrollView, Text, Image } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import PropertyCard from "../../../components/PropertyCard";
 import properties from "../../db/kosan.json";
-import Icon from "../../../assets/icon.png"
+import Icon from "../../../assets/icon.png";
+import { getAccessToken } from "../../lib/auth";
 
 export default function Index() {
     const [search, setSearch] = useState("");
     const filteredProperties = properties.filter(
-        item => item.name && item.name.toLowerCase().includes(search.toLowerCase())
+        (item) =>
+            item.name && item.name.toLowerCase().includes(search.toLowerCase())
     );
+
+    useEffect(() => {
+        const getToken = async () => {
+            const token = await getAccessToken();
+            console.log("Token:", token);
+        };
+
+        getToken();
+    }, []);
 
     // Membagi data menjadi baris (2 kolom per baris)
     const rows = [];
@@ -22,10 +33,17 @@ export default function Index() {
         <View className="flex-1 bg-white dark:bg-[#25292e] px-2 pt-4">
             <View className="flex-row items-center justify-between px-3 mb-4">
                 <View className="flex-row gap-4">
-                    <Image source={Icon} style={{ width: 40, height: 40, borderRadius: 20 }} />
+                    <Image
+                        source={Icon}
+                        style={{ width: 40, height: 40, borderRadius: 20 }}
+                    />
                     <View className="flex-col">
-                        <Text className="text-xl font-bold text-gray-900 dark:text-white">Halo, Teman Koskita!</Text>
-                        <Text className="text-sm text-gray-600 dark:text-gray-300">Temukan kos idamanmu di sini</Text>
+                        <Text className="text-xl font-bold text-gray-900 dark:text-white">
+                            Halo, Teman Koskita!
+                        </Text>
+                        <Text className="text-sm text-gray-600 dark:text-gray-300">
+                            Temukan kos idamanmu di sini
+                        </Text>
                     </View>
                 </View>
             </View>
@@ -40,14 +58,19 @@ export default function Index() {
                     onChangeText={setSearch}
                 />
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 16 }}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 16 }}
+            >
                 {rows.map((row, idx) => (
                     <View key={idx} className="flex-row gap-2 mb-2">
-                        {row.map(item => (
+                        {row.map((item) => (
                             <View key={item.id} className="flex-1">
                                 <PropertyCard
                                     property={item}
-                                    onPress={() => router.push(`/detail/${item.id}`)}
+                                    onPress={() =>
+                                        router.push(`/detail/${item.id}`)
+                                    }
                                 />
                             </View>
                         ))}

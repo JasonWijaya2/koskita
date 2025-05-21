@@ -11,6 +11,8 @@ import {
     Platform,
 } from "react-native";
 import { router } from "expo-router";
+import api from "../../lib/api";
+import { setAccessToken, getAccessToken } from "../../lib/auth";
 
 export default function Login() {
     const [phone, setPhone] = useState("");
@@ -39,8 +41,8 @@ export default function Login() {
             setError("Please enter a valid email address");
             return;
         }
-        if (password.length < 8 || password.length > 12) {
-            setError("Password must be 8-12 characters long");
+        if (password.length < 3 || password.length > 12) {
+            setError("Password must be 3-12 characters long");
             return;
         }
 
@@ -48,12 +50,14 @@ export default function Login() {
         setError("");
 
         try {
-            const response = await api.post("/api/auth/login", {
+            const response = await api.post("/api/user/login", {
                 email,
                 password,
             });
-            await setAccessToken(response.data.accessToken);
-            router.replace("/(main)");
+            console.log("Login Response:", response.data.data.accessToken);
+
+            await setAccessToken(response.data.data.accessToken);
+            router.replace("/(tabs)");
         } catch (error) {
             setError("Sign in failed. Please try again.");
             console.error("Sign In Error:", error);
@@ -107,11 +111,19 @@ export default function Login() {
                                             : "Your Email"
                                     }
                                     placeholderTextColor="#9ca3af"
-                                    value={phone}
-                                    onChangeText={setPhone}
+                                    value={loginType == "phone" ? phone : email}
+                                    onChangeText={
+                                        loginType === "phone"
+                                            ? setPhone
+                                            : setEmail
+                                    }
                                     autoCapitalize="none"
                                     editable={!loading}
-                                    keyboardType="number-pad"
+                                    keyboardType={
+                                        loginType === "phone"
+                                            ? "number-pad"
+                                            : "email-address"
+                                    }
                                 />
                             </View>
 
