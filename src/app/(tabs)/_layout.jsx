@@ -5,22 +5,34 @@ import { useColorScheme } from "react-native";
 export default function TabsLayout() {
     const colorScheme = useColorScheme();
     const isDark = colorScheme === "dark";
-    const backgroundColor = isDark ? "#25292e" : "#fff";
-    const headerTintColor = isDark ? "#fff" : "#25292e";
-    const tabBarActiveTintColor = isDark ? "#ffd33d" : "#2870BD";
+
+    const theme = {
+        light: {
+            backgroundColor: "#fff",
+            headerTintColor: "#25292e",
+            tabBarActiveTintColor: "#009C95",
+        },
+        dark: {
+            backgroundColor: "#25292e",
+            headerTintColor: "#fff",
+            tabBarActiveTintColor: "#E7E1D1",
+        },
+    };
+
+    const currentTheme = isDark ? theme.dark : theme.light;
 
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
                 headerStyle: {
-                    backgroundColor,
+                    backgroundColor: currentTheme.backgroundColor,
                 },
                 headerShadowVisible: false,
-                headerTintColor,
-                tabBarActiveTintColor,
+                headerTintColor: currentTheme.headerTintColor,
+                tabBarActiveTintColor: currentTheme.tabBarActiveTintColor,
                 tabBarStyle: {
-                    backgroundColor,
+                    backgroundColor: currentTheme.backgroundColor,
                     paddingBottom: 0,
                     height: 50,
                 },
@@ -29,29 +41,25 @@ export default function TabsLayout() {
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: "Home",
+                    title: "Explore",
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons
-                            name={focused ? "home-sharp" : "home-outline"}
+                            name={focused ? "search-circle" : "search-outline"}
                             color={color}
-                            size={24}
+                            size={focused ? 24 : 20}
                         />
                     ),
                 }}
             />
             <Tabs.Screen
-                name="about"
+                name="favorite"
                 options={{
-                    title: "About",
+                    title: "Favorite",
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons
-                            name={
-                                focused
-                                    ? "information-circle"
-                                    : "information-circle-outline"
-                            }
+                            name={focused ? "heart" : "heart-outline"}
                             color={color}
-                            size={24}
+                            size={20}
                         />
                     ),
                 }}
@@ -64,7 +72,7 @@ export default function TabsLayout() {
                         <Ionicons
                             name={focused ? "person" : "person-outline"}
                             color={color}
-                            size={24}
+                            size={20}
                         />
                     ),
                 }}

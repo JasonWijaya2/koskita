@@ -7,13 +7,13 @@ import "../../global.css";
 export default function RootLayout() {
     return (
         <SafeAreaProvider>
-            <SafeAreaView className="flex-1">
+            <SafeAreaView style={{ flex: 1 }}>
+                <StatusBar style="auto" />
                 <Stack
                     screenOptions={{
                         headerShown: false,
                     }}
                 >
-                    <StatusBar style="auto" />
                     <Stack.Screen name="(tabs)" />
                 </Stack>
                 <Toast />
