@@ -24,7 +24,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleRegister = async () => {
-        if (!fullname || !email || !password) {
+        if (!fullname || !email || !password || !phone) {
             setError("Please fill in all fields");
             return;
         }
@@ -33,10 +33,12 @@ export default function Login() {
         setError("");
 
         try {
-            const response = await api.post("/api/auth/register", {
+            const response = await api.post("/api/user/register", {
                 name: fullname,
                 email,
                 password,
+                phonenumber: phone,
+                role: "user",
             });
             console.log("Sign Up Response:", response);
             router.back();
@@ -113,7 +115,7 @@ export default function Login() {
                                     onPress={() =>
                                         setShowPassword(!showPassword)
                                     }
-                                    className="absolute right-4 bottom-1/2"
+                                    className="absolute right-4 bottom-8"
                                 >
                                     {showPassword ? (
                                         <Ionicons
@@ -139,7 +141,7 @@ export default function Login() {
                         </View>
                     </View>
 
-                    <View className="flex my-8">
+                    <View className="flex my-10">
                         <Text className="text-sm">
                             Dengan melanjutkan, saya menyetujui{" "}
                             <Text className="underline">
@@ -152,7 +154,7 @@ export default function Login() {
                         </Text>
 
                         <TouchableOpacity
-                            className="w-full h-14 bg-amber-300 rounded-xl items-center justify-center mb-4 mt-20"
+                            className="w-full h-14 bg-amber-300 rounded-xl items-center justify-center my-5"
                             onPress={handleRegister}
                             disabled={loading}
                         >
