@@ -1,8 +1,10 @@
-import { View, TextInput, ScrollView } from "react-native";
+import { View, TextInput, ScrollView, Text, Image } from "react-native";
 import { useState } from "react";
+import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import PropertyCard from "../../../components/PropertyCard";
 import properties from "../../db/kosan.json";
+import Icon from "../../../assets/icon.png"
 
 export default function Index() {
     const [search, setSearch] = useState("");
@@ -18,6 +20,15 @@ export default function Index() {
 
     return (
         <View className="flex-1 bg-white dark:bg-[#25292e] px-2 pt-4">
+            <View className="flex-row items-center justify-between px-3 mb-4">
+                <View className="flex-row gap-4">
+                    <Image source={Icon} style={{ width: 40, height: 40, borderRadius: 20 }} />
+                    <View className="flex-col">
+                        <Text className="text-xl font-bold text-gray-900 dark:text-white">Halo, Teman Koskita!</Text>
+                        <Text className="text-sm text-gray-600 dark:text-gray-300">Temukan kos idamanmu di sini</Text>
+                    </View>
+                </View>
+            </View>
             {/* Search Bar */}
             <View className="flex-row items-center bg-gray-100 dark:bg-[#1e293b] rounded-full px-3 py-2 mb-4">
                 <Ionicons name="search" size={20} color="#64748b" />
@@ -34,10 +45,12 @@ export default function Index() {
                     <View key={idx} className="flex-row gap-2 mb-2">
                         {row.map(item => (
                             <View key={item.id} className="flex-1">
-                                <PropertyCard property={item} />
+                                <PropertyCard
+                                    property={item}
+                                    onPress={() => router.push(`/detail/${item.id}`)}
+                                />
                             </View>
                         ))}
-                        {/* Jika item di baris ini kurang dari 2, tambahkan View kosong agar grid tetap rapi */}
                         {row.length < 2 && <View className="flex-1" />}
                     </View>
                 ))}

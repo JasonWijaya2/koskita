@@ -1,17 +1,10 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import formatCurrency from '../src/helpers/helpers';
 
-const PropertyCard = ({ property }) => {
-    const formatCurrency = (value) => {
-        return new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-            minimumFractionDigits: 0,
-        }).format(value);
-    };
-
+const PropertyCard = ({ property, onPress }) => {
     return (
-        <View className="flex-1 bg-white dark:bg-[#25292e] rounded-2xl shadow-md m-2 p-0 overflow-hidden">
+        <TouchableOpacity onPress={onPress} className="flex-1 bg-white dark:bg-[#25292e] rounded-2xl shadow-md m-2 p-0 overflow-hidden">
             {/* Gambar & badge */}
             <View className="relative">
                 <Image
@@ -74,7 +67,7 @@ const PropertyCard = ({ property }) => {
                     </View>
                 </View> */}
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
