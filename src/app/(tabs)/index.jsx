@@ -1,7 +1,7 @@
 import { View, TextInput, ScrollView } from "react-native";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import PropertyCard from "../../components/PropertyCard";
+import PropertyCard from "../../../components/PropertyCard";
 import properties from "../../db/kosan.json";
 
 export default function Index() {
