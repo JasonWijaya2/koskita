@@ -11,15 +11,15 @@ import {
     Platform,
 } from "react-native";
 import { router } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
 
 export default function Login() {
     const [phone, setPhone] = useState("");
-    const [countryCode, setCountryCode] = useState("+62");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [loginType, setLoginType] = useState("phone");
 
     useEffect(() => {
         const getToken = async () => {
@@ -66,59 +66,102 @@ export default function Login() {
         router.push("/auth/register");
     };
 
+    const handleLoginType = () => {
+        if (loginType === "phone") {
+            setLoginType("email");
+        } else {
+            setLoginType("phone");
+        }
+        setEmail("");
+        setPhone("");
+    };
+
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 50}
+            keyboardVerticalOffset={50}
         >
             <ScrollView
                 keyboardShouldPersistTaps="handled"
                 contentContainerStyle={{ flexGrow: 1 }}
             >
-                <View className="flex-1 items-left justify-between w-full px-7">
-                    <View className="flex">
-                        <Text className="text-4xl font-bold text-gray-900 mt-[67px] font-circular-bold w-64">
-                            Masukkan no. HP Kamu
+                <View className="flex-1 items-left justify-between w-full px-7 bg-white">
+                    <View className="flex w-full">
+                        <Text className="text-4xl font-bold text-gray-900 mt-[67px]">
+                            Masukkan Identitas Kamarmu
                         </Text>
 
                         <View className="space-y-4 my-8">
-                            <View className="flex flex-row justify-between items-center mb-4">
-                                <TouchableOpacity
-                                    onPress={{}}
-                                    className="flex flex-row w-fit h-14 gap-1 items-center justify-center px-4 bg-gray-50 bg-opacity-10 rounded-xl mr-2 border-solid border-2 border-gray-200"
-                                >
-                                    <Text className="">{countryCode}</Text>
-                                    <AntDesign
-                                        name="down"
-                                        size={16}
-                                        color="#9ca3af"
-                                    />
-                                </TouchableOpacity>
-
+                            <View className="flex justify-center items-start gap-2 mb-4">
+                                <Text className="font-semibold">
+                                    {loginType === "phone"
+                                        ? "No. Handphone"
+                                        : "Email"}
+                                </Text>
                                 <TextInput
-                                    className="flex-1 h-14 px-4 bg-gray-50 bg-opacity-10 rounded-xl text-base text-gray-900 border-solid border-2 border-gray-200"
-                                    placeholder="e.g. 81234567890"
+                                    className="w-full h-16 px-4 bg-gray-50 bg-opacity-10 rounded-xl text-base text-gray-900 border-solid border-2 border-gray-200"
+                                    placeholder={
+                                        loginType === "phone"
+                                            ? "e.g. 081234567890"
+                                            : "Your Email"
+                                    }
                                     placeholderTextColor="#9ca3af"
                                     value={phone}
                                     onChangeText={setPhone}
                                     autoCapitalize="none"
                                     editable={!loading}
                                     keyboardType="number-pad"
-                                    maxLength={15}
                                 />
                             </View>
+
+                            <View className="flex justify-center items-start gap-2 mb-4">
+                                <Text className="font-semibold">Password</Text>
+                                <View className="flex flex-row items-center justify-center">
+                                    <TextInput
+                                        className="w-full h-16 px-4 bg-gray-50 bg-opacity-10 rounded-xl text-base text-gray-900 border-solid border-2 border-gray-200"
+                                        placeholder="Your Password"
+                                        placeholderTextColor="#9ca3af"
+                                        value={password}
+                                        onChangeText={setPassword}
+                                        secureTextEntry={!showPassword}
+                                        autoCapitalize="none"
+                                        editable={!loading}
+                                    />
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            setShowPassword(!showPassword)
+                                        }
+                                        className="absolute right-4 bottom-4"
+                                        disabled={loading}
+                                    >
+                                        {showPassword ? (
+                                            <Ionicons
+                                                name="eye-off"
+                                                size={24}
+                                                color="#9ca3af"
+                                            />
+                                        ) : (
+                                            <Ionicons
+                                                name="eye"
+                                                size={24}
+                                                color="#9ca3af"
+                                            />
+                                        )}
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+
                             <View className="flex flex-row gap-1">
                                 <Text className="text-sm">
                                     Sudah terdaftar dengan email?
                                 </Text>
-                                <TouchableOpacity
-                                    onPress={() =>
-                                        router.push("/auth/register")
-                                    }
-                                >
+                                <TouchableOpacity onPress={handleLoginType}>
                                     <Text className="text-[##009C95] text-sm font-semibold">
-                                        Masuk dengan email
+                                        Masuk dengan{" "}
+                                        {loginType === "phone"
+                                            ? "email"
+                                            : "no. handphone"}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
@@ -131,8 +174,8 @@ export default function Login() {
                         </View>
                     </View>
 
-                    <View className="flex gap-6 my-8">
-                        <Text className="text-sm">
+                    <View className="flex my-8">
+                        <Text className="text-sm mb-4">
                             Dengan melanjutkan, saya menyetujui{" "}
                             <Text className="underline">
                                 Syarat & Ketentuan
@@ -142,12 +185,31 @@ export default function Login() {
                                 Kebijakan Privasi Koskita
                             </Text>
                         </Text>
+
+                        <TouchableOpacity
+                            className="w-full h-14 bg-emerald-900 rounded-xl items-center justify-center"
+                            onPress={handleSignIn}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <ActivityIndicator color="#fff" />
+                            ) : (
+                                <Text className="text-white font-semibold text-[16px]">
+                                    Sign In Now
+                                </Text>
+                            )}
+                        </TouchableOpacity>
+
+                        <Text className="text-center text-[14px] text-black opacity-20 my-4">
+                            Or
+                        </Text>
+
                         <TouchableOpacity
                             className="w-full h-14 bg-amber-300 rounded-xl items-center justify-center"
                             onPress={handleSignUp}
                         >
                             <Text className="text-gray-700 font-semibold text-[16px]">
-                                Lanjut
+                                Sign Up Now
                             </Text>
                         </TouchableOpacity>
                     </View>
