@@ -1,0 +1,42 @@
+[
+    {
+        "id": "1",
+        "name": "Cozy Apartment in City Center",
+        "price": 1200000,
+        "stock_kamar": 1,
+        "address": "Tomang, Grogol Petamburan",
+        "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+        "latitude": -6.1774,
+        "longitude": 106.7902
+    },
+    {
+        "id": "2",
+        "name": "Spacious House with Garden",
+        "price": 2500000,
+        "stock_kamar": 5,
+        "address": "Slipi, Palmerah",
+        "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca",
+        "latitude": -6.1968,
+        "longitude": 106.8012
+    },
+    {
+        "id": "3",
+        "name": "Modern Studio Near Beach",
+        "price": 1500000,
+        "stock_kamar": 1,
+        "address": "Tomang, Grogol Petamburan",
+        "image": "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
+        "latitude": -6.1778,
+        "longitude": 106.7915
+    },
+    {
+        "id": "4",
+        "name": "Luxury Condo with Pool",
+        "price": 3000000,
+        "stock_kamar": 10,
+        "address": "Tomang, Grogol Petamburan",
+        "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+        "latitude": -6.1781,
+        "longitude": 106.7923
+    }
+]
