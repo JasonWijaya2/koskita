@@ -73,7 +73,11 @@ export default function Login() {
                 <View className="flex-1 items-left justify-between w-full px-7 bg-white">
                     <View className="flex w-full">
                         <Text className="text-4xl font-bold text-gray-900 mt-[67px]">
-                            Mari beristirahat dengan nyaman di Koskita!
+                            <Text className="text-[#009C95]">
+                                Mari beristirahat
+                            </Text>{" "}
+                            dengan nyaman di{" "}
+                            <Text className="text-[#009C95]">Koskita!</Text>
                         </Text>
 
                         <View className="space-y-4 my-8">
@@ -154,7 +158,7 @@ export default function Login() {
                         </Text>
 
                         <TouchableOpacity
-                            className="w-full h-14 bg-amber-300 rounded-xl items-center justify-center my-5"
+                            className="w-full h-14 bg-[#F4B948] rounded-xl items-center justify-center my-5"
                             onPress={handleRegister}
                             disabled={loading}
                         >
@@ -166,7 +170,7 @@ export default function Login() {
                         <Text className="text-center text-gray-800 mt-2">
                             Already resgistered?{" "}
                             <Text
-                                className="text-amber-400 font-semibold"
+                                className="text-[#009C95] font-semibold"
                                 onPress={handleGoToLogin}
                             >
                                 Sign In

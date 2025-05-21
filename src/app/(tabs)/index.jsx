@@ -1,4 +1,11 @@
-import { View, TextInput, ScrollView, Text, Image, TouchableOpacity } from "react-native";
+import {
+    View,
+    TextInput,
+    ScrollView,
+    Text,
+    Image,
+    TouchableOpacity,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import * as Linking from "expo-linking";
@@ -96,15 +103,12 @@ export default function Index() {
             <TouchableOpacity
                 className="absolute bottom-4 right-4"
                 onPress={() => {
-                    Linking.openURL(
-                        `https://wa.me/6282338303655`
-                    );
+                    Linking.openURL(`https://wa.me/6282338303655`);
                 }}
             >
                 <View className="w-16 h-16 bg-[#22c55e] rounded-full items-center justify-center">
                     <FontAwesome name="whatsapp" size={30} color="#fff" />
                 </View>
-
             </TouchableOpacity>
         </View>
     );

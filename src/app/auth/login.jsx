@@ -99,7 +99,8 @@ export default function Login() {
                 <View className="flex-1 items-left justify-between w-full px-7 bg-white">
                     <View className="flex w-full">
                         <Text className="text-4xl font-bold text-gray-900 mt-[67px]">
-                            Masukkan Identitas Kamarmu
+                            Masukkan Identitas{" "}
+                            <Text className="text-[#009C95]">Kamarmu</Text>
                         </Text>
 
                         <View className="space-y-4 my-8">
@@ -176,7 +177,7 @@ export default function Login() {
                                     Sudah terdaftar dengan email?
                                 </Text>
                                 <TouchableOpacity onPress={handleLoginType}>
-                                    <Text className="text-[##009C95] text-sm font-semibold">
+                                    <Text className="text-[#009C95] text-sm font-semibold">
                                         Masuk dengan{" "}
                                         {loginType === "phone"
                                             ? "email"
@@ -206,7 +207,7 @@ export default function Login() {
                         </Text>
 
                         <TouchableOpacity
-                            className="w-full h-14 bg-emerald-900 rounded-xl items-center justify-center"
+                            className="w-full h-14 bg-[#009C95] rounded-xl items-center justify-center"
                             onPress={handleSignIn}
                             disabled={loading}
                         >
@@ -224,7 +225,7 @@ export default function Login() {
                         </Text>
 
                         <TouchableOpacity
-                            className="w-full h-14 bg-amber-300 rounded-xl items-center justify-center"
+                            className="w-full h-14 bg-[#F4B948] rounded-xl items-center justify-center"
                             onPress={handleSignUp}
                         >
                             <Text className="text-gray-700 font-semibold text-[16px]">
