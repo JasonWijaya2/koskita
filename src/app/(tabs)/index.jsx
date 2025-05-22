@@ -142,12 +142,22 @@ export default function Index() {
                             )}
                         </View>
 
-                        <View className="flex flex-row gap-2 items-center px-3 pt-5 pb-3">
-                            <Ionicons name="home" color="#009C95" size={16} />
-                            <Text className="font-bold text-sm text-[#009C95]">
-                                Coliving
-                            </Text>
-                        </View>
+                        {loading ? (
+                            <View className="flex px-3 pt-5 pb-3">
+                                <View className="w-48 h-6 rounded bg-gray-200" />
+                            </View>
+                        ) : (
+                            <View className="flex flex-row gap-2 items-center px-3 pt-5 pb-3">
+                                <Ionicons
+                                    name="home"
+                                    color="#009C95"
+                                    size={16}
+                                />
+                                <Text className="font-bold text-sm text-[#009C95]">
+                                    Coliving
+                                </Text>
+                            </View>
+                        )}
 
                         {rows.map((row, idx) => (
                             <View key={idx} className="flex-row gap-2 mb-2">
