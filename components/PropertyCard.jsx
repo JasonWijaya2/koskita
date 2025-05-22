@@ -9,7 +9,7 @@ const PropertyCard = ({ property, onPress }) => {
             {/* Gambar & badge */}
             <View className="relative">
                 <Image
-                    source={{ uri: property.image?.trim() ? property.image : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" }}
+                    source={{ uri: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" }}
                     style={{ width: '100%', height: 120 }}
                     className="rounded-t-2xl"
                     resizeMode="cover"
@@ -30,7 +30,7 @@ const PropertyCard = ({ property, onPress }) => {
                 </TouchableOpacity>
                 {/* Badge 360 & sisa kamar */}
                 <View className="absolute bottom-2 right-2 bg-yellow-400 px-2 py-0.5 rounded">
-                    <Text className="text-xs font-semibold text-gray-800">Sisa {property.stockKamar} kamar</Text>
+                    <Text className="text-xs font-semibold text-gray-800">Sisa {property.availableRooms} kamar</Text>
                 </View>
             </View>
             {/* Konten */}

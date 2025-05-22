@@ -173,7 +173,7 @@ export default function Detail() {
             <View
                 className="absolute top-0 left-0 right-0 z-50"
                 pointerEvents="box-none"
-                style={{ paddingTop: 32, paddingHorizontal: 16 }} // paddingTop: 32 untuk status bar
+                style={{ paddingTop: 32, paddingHorizontal: 16 }}
             >
                 <View
                     className={`flex-row justify-between items-center transition-all duration-300 shadow rounded-b-2xl`}
@@ -232,7 +232,7 @@ export default function Detail() {
                 {/* Gambar utama */}
                 <View className="relative">
                     <Image
-                        source={{ uri: property.image?.trim() ? property.image : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" }}
+                        source={{ uri: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" }}
                         style={{ width: "100%", height: 180 }}
                         resizeMode="cover"
                     />
@@ -315,6 +315,9 @@ export default function Detail() {
                                         {item.name === "Kasur" && (
                                             <FontAwesome name="bed" size={20} color="#444" style={{ marginRight: 6 }} />
                                         )}
+                                        {item.name === "Meja" && (
+                                            <MaterialIcons name="table-restaurant" size={20} color="#444" style={{ marginRight: 6 }} />
+                                        )}
                                         {/* Default icon jika tidak ada yang cocok */}
                                         {![
                                             "Wifi",
@@ -324,7 +327,8 @@ export default function Detail() {
                                             "Laundry",
                                             "CCTV",
                                             "AC",
-                                            "Kasur"
+                                            "Kasur",
+                                            "Meja"
                                         ].includes(item.name) && (
                                                 <Ionicons name="home-outline" size={20} color="#444" style={{ marginRight: 6 }} />
                                             )}
@@ -453,6 +457,7 @@ export default function Detail() {
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                        disabled={property.availableRooms <= 0}
                         onPress={handleBooking}
                         className="flex-1 bg-[#F4B948] py-3 rounded-xl items-center flex-row justify-center"
                     >

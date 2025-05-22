@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Image, ScrollView, Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import Modal from "react-native-modal";
 import api from "../../lib/api";
 
 export default function Booking() {
@@ -11,11 +12,15 @@ export default function Booking() {
     const property = params.property ? JSON.parse(params.property) : {};
     const [step, setStep] = useState(1);
     const [duration, setDuration] = useState(1);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [paymentType, setPaymentType] = useState("");
     const [bookingResult, setBookingResult] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleRent = async () => {
+        setIsLoading(true);
         try {
             const body = {
                 kosanId: property.id,
@@ -24,10 +29,12 @@ export default function Booking() {
             };
             const response = await api.post(`/api/rent`, body);
             setBookingResult(response.data.data);
-            setStep(3);
         } catch (error) {
             console.log("Error booking:", error?.response?.data || error.message);
             setBookingResult(null);
+        } finally {
+            setIsLoading(false);
+            setStep(3);
         }
     };
 
@@ -66,18 +73,55 @@ export default function Booking() {
                     <>
                         {/* Pesanan */}
                         <Text className="font-bold text-base mb-2">Pesanan</Text>
+
+                        {/* Pilih tanggal booking */}
                         <View className="flex-row items-center mb-2">
                             <Ionicons name="calendar-outline" size={18} color="#222" />
-                            <DateTimePicker
-                                value={selectedDate}
-                                mode="date"
-                                display="default"
-                                onChange={(event, date) => {
-                                    if (date) setSelectedDate(date);
-                                }}
-                                minimumDate={new Date()}
-                            />
+                            {Platform.OS === "ios" ? (
+                                <View className="flex-row justify-center items-center">
+                                    <DateTimePicker
+                                        value={selectedDate}
+                                        mode="date"
+                                        display="default"
+                                        onChange={(event, date) => {
+                                            if (date) setSelectedDate(date);
+                                        }}
+                                        minimumDate={new Date()}
+                                        style={{ alignSelf: "flex-start" }}
+                                    />
+                                    <Text className="ml-2 text-md">Pilih tanggal masuk</Text>
+                                </View>
+                            ) : (
+                                <View className="flex-row items-center">
+                                    <Text className="ml-2 text-sm">
+                                        {selectedDate
+                                            ? selectedDate.toLocaleDateString()
+                                            : "Pilih tanggal masuk"}
+                                    </Text>
+
+                                    <TouchableOpacity
+                                        className="ml-2"
+                                        onPress={() => setShowDatePicker(true)}
+                                    >
+                                        <Text className="text-blue-600 text-sm font-semibold">Ubah</Text>
+                                    </TouchableOpacity>
+
+                                    {showDatePicker && (
+                                        <DateTimePicker
+                                            value={selectedDate}
+                                            mode="date"
+                                            display="default"
+                                            onChange={(event, date) => {
+                                                setShowDatePicker(false);
+                                                if (date) setSelectedDate(date);
+                                            }}
+                                            minimumDate={new Date()}
+                                        />
+                                    )}
+                                </View>
+                            )}
                         </View>
+
                         <View className="bg-white rounded-xl border border-gray-200 mb-4 overflow-hidden">
                             <Image
                                 source={{ uri: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" }}
@@ -165,67 +209,17 @@ export default function Booking() {
                 {step === 2 && (
                     <>
                         {/* Pilih Metode Pembayaran */}
-                        <Text className="font-bold text-base mb-2 mt-2">Pilih metode pembayaran</Text>
                         <TouchableOpacity
-                            className="flex-row items-center mb-3"
-                            onPress={() => setPaymentType("bank")}
+                            className="bg-black py-3 rounded-xl items-center mt-4"
+                            onPress={() => setShowPaymentModal(true)}
                         >
-                            <View
-                                className={`w-5 h-5 rounded-full border-2 mr-3 ${paymentType === "bank"
-                                    ? "border-green-600 bg-green-600"
-                                    : "border-gray-400 bg-white"
-                                    }`}
-                                style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                {paymentType === "bank" && (
-                                    <View className="w-2.5 h-2.5 rounded-full bg-white" />
-                                )}
-                            </View>
-                            <Text className="text-sm font-semibold">Transfer Bank</Text>
+                            <Text className="text-white font-semibold">Pilih Metode Pembayaran</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            className="flex-row items-center mb-3"
-                            onPress={() => setPaymentType("ewallet")}
-                        >
-                            <View
-                                className={`w-5 h-5 rounded-full border-2 mr-3 ${paymentType === "ewallet"
-                                    ? "border-green-600 bg-green-600"
-                                    : "border-gray-400 bg-white"
-                                    }`}
-                                style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                {paymentType === "ewallet" && (
-                                    <View className="w-2.5 h-2.5 rounded-full bg-white" />
-                                )}
-                            </View>
-                            <Text className="text-sm font-semibold">E-Wallet</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            className="flex-row items-center mb-3"
-                            onPress={() => setPaymentType("lainnya")}
-                        >
-                            <View
-                                className={`w-5 h-5 rounded-full border-2 mr-3 ${paymentType === "lainnya"
-                                    ? "border-green-600 bg-green-600"
-                                    : "border-gray-400 bg-white"
-                                    }`}
-                                style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                {paymentType === "lainnya" && (
-                                    <View className="w-2.5 h-2.5 rounded-full bg-white" />
-                                )}
-                            </View>
-                            <Text className="text-sm font-semibold">Lainnya</Text>
-                        </TouchableOpacity>
+                        {paymentType && (
+                            <Text className="text-base mb-2">
+                                Metode pembayaran: {paymentType ? paymentType : "Belum dipilih"}
+                            </Text>
+                        )}
 
                         {/* Pilih Durasi Sewa */}
                         <Text className="font-bold text-base mb-2 mt-4">Pilih Durasi Sewa (bulan)</Text>
@@ -266,18 +260,29 @@ export default function Booking() {
                                 Silakan pilih metode pembayaran terlebih dahulu.
                             </Text>
                         )}
+
+                        <TouchableOpacity
+                            className="bg-black py-3 rounded-xl items-center mt-4"
+                            onPress={() => setStep(1)}
+                            disabled={isLoading}
+                            style={{ opacity: isLoading ? 0.5 : 1 }}
+                        >
+                            <Text className="text-white font-semibold">Kembali ke Pemesanan</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity
                             className="bg-black py-3 rounded-xl items-center mt-2"
                             onPress={async () => {
-                                if (paymentType) {
+                                if (paymentType && !isLoading) {
                                     await handleRent();
                                     console.log("Bayar Sekarang");
-                                    console.log(bookingResult);
-
                                 }
                             }}
+                            disabled={isLoading}
+                            style={{ opacity: isLoading ? 0.5 : 1 }}
                         >
-                            <Text className="text-white font-semibold">Bayar Sekarang</Text>
+                            <Text className="text-white font-semibold">
+                                {isLoading ? "Memproses..." : "Bayar Sekarang"}
+                            </Text>
                         </TouchableOpacity>
                     </>
                 )}
@@ -322,6 +327,51 @@ export default function Booking() {
                     </View>
                 )}
             </ScrollView>
+            <Modal
+                isVisible={showPaymentModal}
+                onBackdropPress={() => setShowPaymentModal(false)}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+            >
+                <View style={{
+                    backgroundColor: "white",
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    padding: 20,
+                    minHeight: 350
+                }}>
+                    <Text className="font-bold text-lg mb-4">Metode Pembayaran</Text>
+                    <Text className="text-xs text-gray-500 mb-2">Kartu Kredit</Text>
+                    <TouchableOpacity
+                        className="flex-row items-center justify-between mb-4"
+                        onPress={() => {
+                            setPaymentType("credit");
+                            setShowPaymentModal(false);
+                        }}
+                    >
+                        <Text className="text-base">Kartu Kredit</Text>
+                        <View className={`w-5 h-5 rounded-full border-2 ${paymentType === "credit" ? "border-green-600 bg-green-600" : "border-gray-400 bg-white"}`} />
+                    </TouchableOpacity>
+
+                    <Text className="text-xs text-gray-500 mb-2 mt-2">Virtual Account</Text>
+                    {[
+                        { key: "bca", label: "BCA Virtual Account" },
+                        { key: "bni", label: "BNI Virtual Account" },
+                        { key: "permata", label: "Permata Virtual Account" }
+                    ].map(item => (
+                        <TouchableOpacity
+                            key={item.key}
+                            className="flex-row items-center justify-between mb-3"
+                            onPress={() => {
+                                setPaymentType(item.key);
+                                setShowPaymentModal(false);
+                            }}
+                        >
+                            <Text className="text-base">{item.label}</Text>
+                            <View className={`w-5 h-5 rounded-full border-2 ${paymentType === item.key ? "border-green-600 bg-green-600" : "border-gray-400 bg-white"}`} />
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </Modal>
         </View>
     );
 }
