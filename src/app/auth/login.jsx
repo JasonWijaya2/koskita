@@ -9,6 +9,7 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     Platform,
+    Image,
 } from "react-native";
 import { router } from "expo-router";
 import api from "../../lib/api";
@@ -98,7 +99,13 @@ export default function Login() {
             >
                 <View className="flex-1 items-left justify-between w-full px-7 bg-white">
                     <View className="flex w-full">
-                        <Text className="text-4xl font-bold text-gray-900 mt-[67px]">
+                        <Image
+                            source={require("../../../assets/icon.png")}
+                            contentFit="contain"
+                            className="w-16 h-16 my-8"
+                            alt="Logo"
+                        />
+                        <Text className="text-4xl font-bold text-gray-900">
                             Masukkan Identitas{" "}
                             <Text className="text-[#009C95]">Kamarmu</Text>
                         </Text>
