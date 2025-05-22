@@ -101,16 +101,15 @@ export default function Index() {
 
                         {/* Search Bar */}
                         <View className="absolute bottom-2 left-7 right-5">
-                            <View className="flex-row items-center justify-between bg-gray-100 dark:bg-[#1e293b] rounded-full p-2 mb-4">
-                                <View className="items-center justify-center">
-                                    <TextInput
-                                        className="ml-3 items-center justify-center text-base text-gray-800 dark:text-white h-10"
-                                        placeholder="Cari kos favoritmu..."
-                                        placeholderTextColor="#94a3b8"
-                                        value={search}
-                                        onChangeText={setSearch}
-                                    />
-                                </View>
+                            <View className="flex-row w-full items-center justify-between bg-gray-100 dark:bg-[#1e293b] rounded-full p-2 mb-4">
+                                <TextInput
+                                    className="w-72 ml-3 items-center justify-center text-base text-gray-800 dark:text-white h-10"
+                                    placeholder="Cari kos favoritmu..."
+                                    placeholderTextColor="#94a3b8"
+                                    value={search}
+                                    onChangeText={setSearch}
+                                />
+
                                 <View className="bg-[#009C95] rounded-full w-12 h-12 items-center justify-center">
                                     <Ionicons
                                         name="search"
