@@ -5,6 +5,8 @@ import {
     Text,
     Image,
     TouchableOpacity,
+    KeyboardAvoidingView,
+    Platform,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
@@ -69,9 +71,14 @@ export default function Index() {
     }
 
     return (
-        <>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={50}
+        >
             <ScrollView
                 showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
                 contentContainerStyle={{ paddingBottom: 16 }}
                 className="flex-1 bg-white dark:bg-[#25292e]"
             >
@@ -189,6 +196,6 @@ export default function Index() {
                     <FontAwesome name="whatsapp" size={30} color="#fff" />
                 </View>
             </TouchableOpacity>
-        </>
+        </KeyboardAvoidingView>
     );
 }
