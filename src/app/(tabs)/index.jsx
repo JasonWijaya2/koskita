@@ -101,7 +101,7 @@ export default function Index() {
 
                         {/* Search Bar */}
                         <View className="absolute bottom-2 left-7 right-5">
-                            <View className="flex-row items-center justify-between bg-gray-100 dark:bg-[#1e293b] rounded-full p-3 mb-4">
+                            <View className="flex-row items-center justify-between bg-gray-100 dark:bg-[#1e293b] rounded-full p-2 mb-4">
                                 <View className="items-center justify-center">
                                     <TextInput
                                         className="ml-3 items-center justify-center text-base text-gray-800 dark:text-white h-10"
@@ -114,7 +114,7 @@ export default function Index() {
                                 <View className="bg-[#009C95] rounded-full w-12 h-12 items-center justify-center">
                                     <Ionicons
                                         name="search"
-                                        size={20}
+                                        size={24}
                                         color="#fff"
                                     />
                                 </View>
