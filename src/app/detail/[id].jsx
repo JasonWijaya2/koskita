@@ -5,8 +5,6 @@ import {
     Image,
     ScrollView,
     TouchableOpacity,
-    Dimensions,
-    ActivityIndicator,
 } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
@@ -63,10 +61,17 @@ export default function Detail() {
     }, [property]);
 
     const handleWhatsapp = () => {
+        const message = `Halo Koskita!\n\nSaya ingin bertanya terkait kamar kos ${property.name}. Apakah boleh dibantu?\n\nTerima kasih`;
+        const url = `https://wa.me/6282338303655?text=${encodeURIComponent(message)}`;
+
+        Linking.openURL(url);
+    };
+
+    const handleBooking = () => {
         Linking.openURL(
             `https://wa.me/6282338303655?text=Halo%20Koskita,%20saya%20tertarik%20dengan%20kos%20ini.`
         );
-    };
+    }
 
     if (loading) {
         return (
@@ -249,7 +254,7 @@ export default function Detail() {
 
                     {/* Section Fasilitas Bersama */}
                     <View className="mt-4">
-                        <Text className="font-bold text-base text-xl mb-2">
+                        <Text className="font-bold text-xl mb-2">
                             Fasilitas
                         </Text>
                         <View className="flex-row flex-wrap">
@@ -309,7 +314,7 @@ export default function Detail() {
 
                     {/* Section Lokasi */}
                     <View className="mt-4">
-                        <Text className="font-bold text-base text-xl mb-2">
+                        <Text className="font-bold text-xl mb-2">
                             Lokasi
                         </Text>
                         <View
@@ -345,7 +350,7 @@ export default function Detail() {
 
                     {/* Section Tata Tertib */}
                     <View className="mt-4">
-                        <Text className="font-bold text-base text-xl mb-2">
+                        <Text className="font-bold text-xl mb-2">
                             Tata Tertib
                         </Text>
                         <View className="space-y-2">
@@ -412,14 +417,22 @@ export default function Detail() {
                         </Text>
                     </Text>
                 </View>
-                <View className="flex-row">
+                <View className="flex-row gap-2">
                     <TouchableOpacity
                         onPress={handleWhatsapp}
                         className="flex-1 bg-green-100 py-3 rounded-xl items-center flex-row justify-center"
                     >
                         <FontAwesome name="whatsapp" size={18} color="#22c55e" />
                         <Text className="text-green-700 font-semibold ml-2">
-                            Chat Koskita Untuk Pemesanan
+                            Chat Koskita
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleBooking}
+                        className="flex-1 bg-[#F4B948] py-3 rounded-xl items-center flex-row justify-center"
+                    >
+                        <Text className="text-black font-semibold ml-2">
+                            Pesan Kamar
                         </Text>
                     </TouchableOpacity>
                 </View>
