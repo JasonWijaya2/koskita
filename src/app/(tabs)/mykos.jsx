@@ -116,32 +116,12 @@ export default function MyKos() {
                     </View>
                 ) : (
                     <View className="flex px-3 pt-4">
-                        <View className="flex gap-1 justify-start items-top px-3 py-5">
-                            {loading ? (
-                                <View className="w-48 h-4 rounded bg-gray-200 mt-2" />
-                            ) : (
-                                <Text className="text-lg text-gray-600 dark:text-gray-300">
-                                    Kos kamu sekarang
-                                </Text>
-                            )}
-                        </View>
-
                         {loading ? (
                             <View className="flex px-3 pt-5 pb-3">
                                 <View className="w-48 h-6 rounded bg-gray-200" />
                             </View>
                         ) : (
                             <>
-                                <View className="flex flex-row gap-2 items-center px-3 pt-5 pb-3">
-                                    <Ionicons
-                                        name="home"
-                                        color="#009C95"
-                                        size={16}
-                                    />
-                                    <Text className="font-bold text-sm text-[#009C95]">
-                                        Coliving
-                                    </Text>
-                                </View>
                                 {/* List kos yang sudah di-booking */}
                                 {rent.map((item) => (
                                     <TouchableOpacity
