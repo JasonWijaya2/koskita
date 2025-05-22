@@ -36,6 +36,8 @@ export default function TabsLayout() {
                     backgroundColor: currentTheme.backgroundColor,
                     paddingBottom: 0,
                     height: 50,
+                    borderTopWidth: 1,
+                    borderTopColor: "#ccc",
                 },
             }}
         >

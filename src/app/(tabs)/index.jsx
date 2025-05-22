@@ -18,6 +18,8 @@ import api from "../../lib/api";
 export default function Index() {
     const [search, setSearch] = useState("");
     const [listKos, setListKos] = useState([]);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const filteredProperties = listKos.filter(
         (item) =>
             item.name && item.name.toLowerCase().includes(search.toLowerCase())
@@ -37,6 +39,21 @@ export default function Index() {
     }, []);
 
     useEffect(() => {
+        const getUser = async () => {
+            setLoading(true);
+            try {
+                const response = await api.get("/api/user/profile");
+                setUser(response.data.data);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+            setLoading(false);
+        };
+
+        getUser();
+    }, []);
+
+    useEffect(() => {
         const getToken = async () => {
             const token = await getAccessToken();
             console.log("Token:", token);
@@ -52,53 +69,106 @@ export default function Index() {
     }
 
     return (
-        <View className="flex-1 bg-white dark:bg-[#25292e] px-2 pt-4">
-            <View className="flex-row items-center justify-between px-3 mb-4">
-                <View className="flex-row gap-4">
-                    <Image
-                        source={Icon}
-                        style={{ width: 40, height: 40, borderRadius: 20 }}
-                    />
-                    <View className="flex-col">
-                        <Text className="text-xl font-bold text-gray-900 dark:text-white">
-                            Halo, Teman Koskita!
-                        </Text>
-                        <Text className="text-sm text-gray-600 dark:text-gray-300">
-                            Temukan kos idamanmu di sini
-                        </Text>
-                    </View>
-                </View>
-            </View>
-            {/* Search Bar */}
-            <View className="flex-row items-center bg-gray-100 dark:bg-[#1e293b] rounded-full px-3 py-2 mb-4">
-                <Ionicons name="search" size={20} color="#64748b" />
-                <TextInput
-                    className="flex-1 ml-2 text-base text-gray-800 dark:text-white h-10"
-                    placeholder="Cari kos favoritmu..."
-                    placeholderTextColor="#94a3b8"
-                    value={search}
-                    onChangeText={setSearch}
-                />
-            </View>
+        <>
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 16 }}
+                className="flex-1 bg-white dark:bg-[#25292e]"
             >
-                {rows.map((row, idx) => (
-                    <View key={idx} className="flex-row gap-2 mb-2">
-                        {row.map((item) => (
-                            <View key={item.id} className="flex-1">
-                                <PropertyCard
-                                    property={item}
-                                    onPress={() =>
-                                        router.push(`/detail/${item.id}`)
-                                    }
-                                />
+                <View className="flex-1 bg-white dark:bg-[#25292e]">
+                    {/* Header */}
+                    <View className="bg-[#F6F1E7] rounded-bl-[64px] relative">
+                        <Image
+                            source={{
+                                uri: "https://images.rukita.co/web/static/img/home-v2/300425/homepage-app.jpg?tr=c-at_max%2Cw-1440%2Cq-50",
+                            }}
+                            style={{
+                                width: "100%",
+                                height: 356,
+                                borderBottomLeftRadius: 48,
+                            }}
+                        />
+                        <View className="absolute top-6 left-9">
+                            <Image
+                                source={Icon}
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: 20,
+                                }}
+                            />
+                        </View>
+
+                        {/* Search Bar */}
+                        <View className="absolute bottom-2 left-7 right-5">
+                            <View className="flex-row items-center justify-between bg-gray-100 dark:bg-[#1e293b] rounded-full p-3 mb-4">
+                                <View className="items-center justify-center">
+                                    <TextInput
+                                        className="ml-3 items-center justify-center text-base text-gray-800 dark:text-white h-10"
+                                        placeholder="Cari kos favoritmu..."
+                                        placeholderTextColor="#94a3b8"
+                                        value={search}
+                                        onChangeText={setSearch}
+                                    />
+                                </View>
+                                <View className="bg-[#009C95] rounded-full w-12 h-12 items-center justify-center">
+                                    <Ionicons
+                                        name="search"
+                                        size={20}
+                                        color="#fff"
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View className="flex px-3 pt-4">
+                        <View className="flex gap-1 justify-start items-top px-3 py-5">
+                            <Text className="text-4xl font-bold text-gray-900 dark:text-white">
+                                {loading ? (
+                                    <View className="w-32 h-10 rounded bg-gray-200" />
+                                ) : (
+                                    <Text className="text-4xl font-bold text-[#222]">
+                                        Halo, {user?.name || "Kevin Via"}!
+                                    </Text>
+                                )}
+                            </Text>
+
+                            {loading ? (
+                                <View className="w-48 h-4 rounded bg-gray-200 mt-2" />
+                            ) : (
+                                <Text className="text-lg text-gray-600 dark:text-gray-300">
+                                    Temukan kos idamanmu di sini
+                                </Text>
+                            )}
+                        </View>
+
+                        <View className="flex flex-row gap-2 items-center px-3 pt-5 pb-3">
+                            <Ionicons name="home" color="#009C95" size={16} />
+                            <Text className="font-bold text-sm text-[#009C95]">
+                                Coliving
+                            </Text>
+                        </View>
+
+                        {rows.map((row, idx) => (
+                            <View key={idx} className="flex-row gap-2 mb-2">
+                                {row.map((item) => (
+                                    <View key={item.id} className="flex-1">
+                                        <PropertyCard
+                                            property={item}
+                                            onPress={() =>
+                                                router.push(
+                                                    `/detail/${item.id}`
+                                                )
+                                            }
+                                        />
+                                    </View>
+                                ))}
+                                {row.length < 2 && <View className="flex-1" />}
                             </View>
                         ))}
-                        {row.length < 2 && <View className="flex-1" />}
                     </View>
-                ))}
+                </View>
             </ScrollView>
             <TouchableOpacity
                 className="absolute bottom-4 right-4"
@@ -110,6 +180,6 @@ export default function Index() {
                     <FontAwesome name="whatsapp" size={30} color="#fff" />
                 </View>
             </TouchableOpacity>
-        </View>
+        </>
     );
 }
