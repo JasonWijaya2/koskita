@@ -5,23 +5,6 @@ import api from "../../lib/api";
 import PropertyCard from "../../../components/PropertyCard";
 import { useRouter } from "expo-router";
 
-const dummyKos = [
-    {
-        id: 1,
-        name: "Kost Coliving Tebet",
-        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
-        label: "Coliving",
-        flash: true,
-    },
-    {
-        id: 2,
-        name: "Kost Coliving Kuningan",
-        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-        label: "Coliving",
-        flash: true,
-    },
-];
-
 export default function MyKos() {
     const [tab, setTab] = useState("aktif");
     const [listKos, setListKos] = useState([]);
@@ -62,36 +45,32 @@ export default function MyKos() {
                 </View>
                 <View className="flex flex-row pt-2">
                     <TouchableOpacity
-                        className={`flex-1 items-center pb-5 pt-3 ${
-                            tab === "aktif" ? "border-b-2 border-[#222]" : ""
-                        }`}
+                        className={`flex-1 items-center pb-5 pt-3 ${tab === "aktif" ? "border-b-2 border-[#222]" : ""
+                            }`}
                         onPress={() => setTab("aktif")}
                     >
                         <Text
-                            className={`font-semibold text-base ${
-                                tab === "aktif"
+                            className={`font-semibold text-base ${tab === "aktif"
                                     ? "text-[#222]"
                                     : "text-gray-400"
-                            }`}
+                                }`}
                         >
                             Kos Sekarang
                         </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        className={`flex-1 items-center pb-5 pt-3 ${
-                            tab === "riwayat"
+                        className={`flex-1 items-center pb-5 pt-3 ${tab === "riwayat"
                                 ? "border-b-2 border-[#222] rounded-br-[28px]"
                                 : ""
-                        }`}
+                            }`}
                         onPress={() => setTab("riwayat")}
                     >
                         <Text
-                            className={`font-semibold text-base ${
-                                tab === "riwayat"
+                            className={`font-semibold text-base ${tab === "riwayat"
                                     ? "text-[#222]"
                                     : "text-gray-400"
-                            }`}
+                                }`}
                         >
                             Riwayat Kos
                         </Text>

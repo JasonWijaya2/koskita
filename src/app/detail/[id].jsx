@@ -9,7 +9,7 @@ import {
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 import * as Linking from "expo-linking";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import api from "../../lib/api";
 import Icon from "../../../assets/icon.png"
 
@@ -18,6 +18,7 @@ export default function Detail() {
     const [property, setProperty] = useState(null);
     const [loading, setLoading] = useState(true);
     const [city, setCity] = useState("");
+    const scrollRef = useRef(null);
 
     useEffect(() => {
         const fetchProperty = async () => {
@@ -68,10 +69,11 @@ export default function Detail() {
     };
 
     const handleBooking = () => {
-        Linking.openURL(
-            `https://wa.me/6282338303655?text=Halo%20Koskita,%20saya%20tertarik%20dengan%20kos%20ini.`
-        );
-    }
+        router.push({
+            pathname: "/detail/booking",
+            params: { property: JSON.stringify(property) }
+        });
+    };
 
     if (loading) {
         return (
@@ -167,7 +169,62 @@ export default function Detail() {
 
     return (
         <View className="flex-1 bg-white dark:bg-[#25292e]">
+            {/* Icon atas sticky */}
+            <View
+                className="absolute top-0 left-0 right-0 z-50"
+                pointerEvents="box-none"
+                style={{ paddingTop: 32, paddingHorizontal: 16 }} // paddingTop: 32 untuk status bar
+            >
+                <View
+                    className={`flex-row justify-between items-center transition-all duration-300 shadow rounded-b-2xl`}
+                    style={{
+                        padding: 8,
+                        marginHorizontal: -16,
+                        marginTop: -32,
+                        minHeight: 56,
+                    }}
+                >
+                    <View className="flex-row space-x-2">
+                        <TouchableOpacity
+                            className="p-2 rounded-full"
+                            style={{
+                                backgroundColor: "#f3f4f6",
+                            }}
+                            onPress={router.back}
+                        >
+                            <Ionicons name="arrow-back" size={20} color="#222" />
+                        </TouchableOpacity>
+                    </View>
+                    <View className="flex-row space-x-2 gap-2">
+                        <TouchableOpacity
+                            className="p-2 rounded-full"
+                            style={{
+                                backgroundColor: "#f3f4f6",
+                            }}
+                        >
+                            <Ionicons name="heart-outline" size={20} color="#222" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className="p-2 rounded-full"
+                            style={{
+                                backgroundColor: "#f3f4f6",
+                            }}
+                        >
+                            <Ionicons name="share-social-outline" size={20} color="#222" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className="p-2 rounded-full"
+                            style={{
+                                backgroundColor: "#f3f4f6",
+                            }}
+                        >
+                            <MaterialIcons name="menu" size={20} color="#222" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
             <ScrollView
+                ref={scrollRef}
                 contentContainerStyle={{ paddingBottom: 90 }}
                 className="flex-1"
                 showsVerticalScrollIndicator={false}
@@ -179,38 +236,6 @@ export default function Detail() {
                         style={{ width: "100%", height: 180 }}
                         resizeMode="cover"
                     />
-                    {/* Icon atas */}
-                    <View className="absolute top-3 left-3 flex-row space-x-2">
-                        <TouchableOpacity
-                            className="bg-white/80 p-2 rounded-full"
-                            onPress={router.back}
-                        >
-                            <Ionicons
-                                name="arrow-back"
-                                size={20}
-                                color="#222"
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View className="absolute top-3 right-3 flex-row space-x-2 gap-2">
-                        <TouchableOpacity className="bg-white/80 p-2 rounded-full">
-                            <Ionicons
-                                name="heart-outline"
-                                size={20}
-                                color="#222"
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity className="bg-white/80 p-2 rounded-full">
-                            <Ionicons
-                                name="share-social-outline"
-                                size={20}
-                                color="#222"
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity className="bg-white/80 p-2 rounded-full">
-                            <MaterialIcons name="menu" size={20} color="#222" />
-                        </TouchableOpacity>
-                    </View>
                     {/* Badge */}
                     <View className="absolute bottom-3 left-3 bg-white/80 px-2 py-1 rounded">
                         <View className="flex-row justify-center items-center gap-1">
