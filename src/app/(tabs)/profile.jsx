@@ -33,7 +33,7 @@ export default function Profile() {
     return (
         <ScrollView className="flex-1 bg-white">
             {/* Header */}
-            <View className="bg-[#F6F1E7] pb-8 rounded-br-[64px] px-6">
+            <View className="bg-[#F6F1E7] pb-8 rounded-br-[48px] px-6">
                 <View className="flex-row justify-between items-center py-8">
                     <Text className="text-[22px] font-bold text-[#009C95]">
                         Profile

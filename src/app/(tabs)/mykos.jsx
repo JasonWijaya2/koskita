@@ -54,7 +54,7 @@ export default function MyKos() {
     return (
         <View className="flex-1 bg-white dark:bg-[#25292e]">
             {/* Header */}
-            <View className="bg-[#F6F1E7] rounded-br-[64px] px-6">
+            <View className="bg-[#F6F1E7] rounded-br-[48px] px-6">
                 <View className="flex-row justify-between items-center py-8">
                     <Text className="text-[22px] font-bold text-[#009C95]">
                         My Kos
@@ -81,7 +81,7 @@ export default function MyKos() {
                     <TouchableOpacity
                         className={`flex-1 items-center pb-5 pt-3 ${
                             tab === "riwayat"
-                                ? "border-b-2 border-[#222] rounded-br-[36px]"
+                                ? "border-b-2 border-[#222] rounded-br-[28px]"
                                 : ""
                         }`}
                         onPress={() => setTab("riwayat")}

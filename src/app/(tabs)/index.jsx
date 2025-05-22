@@ -85,7 +85,7 @@ export default function Index() {
                             style={{
                                 width: "100%",
                                 height: 356,
-                                borderBottomLeftRadius: 48,
+                                borderBottomLeftRadius: 42,
                             }}
                         />
                         <View className="absolute top-6 left-9">
