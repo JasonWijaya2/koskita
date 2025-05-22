@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Ionicons, FontAwesome, Feather } from "@expo/vector-icons";
 import api from "../../lib/api";
 import PropertyCard from "../../../components/PropertyCard";
+import { useRouter } from "expo-router";
 
 const dummyKos = [
     {
@@ -25,6 +26,7 @@ export default function MyKos() {
     const [tab, setTab] = useState("aktif");
     const [listKos, setListKos] = useState([]);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         const getKos = async () => {
@@ -45,57 +47,75 @@ export default function MyKos() {
         rows.push(listKos.slice(i, i + 2));
     }
 
+    const handleGoToExplore = () => {
+        router.push("/");
+    };
+
     return (
         <View className="flex-1 bg-white dark:bg-[#25292e]">
             {/* Header */}
-            <View className="bg-[#F6F1E7] rounded-b-[32px]">
-                {/* Header Title + Icon */}
-                <View className="flex-row justify-between items-center px-6 pt-6 pb-4">
-                    <Text className="text-[22px] font-bold text-[#222]">My Kos</Text>
-                    <Ionicons name="notifications-outline" size={24} color="#222" />
+            <View className="bg-[#F6F1E7] rounded-br-[64px] px-6">
+                <View className="flex-row justify-between items-center py-8">
+                    <Text className="text-[22px] font-bold text-[#009C95]">
+                        My Kos
+                    </Text>
                 </View>
-
-                {/* Tabs */}
-                <View className="flex-row">
+                <View className="flex flex-row pt-2">
                     <TouchableOpacity
-                        className="flex-1 items-center pb-3 pt-2"
+                        className={`flex-1 items-center pb-5 pt-3 ${
+                            tab === "aktif" ? "border-b-2 border-[#222]" : ""
+                        }`}
                         onPress={() => setTab("aktif")}
                     >
                         <Text
-                            className={`font-semibold text-base ${tab === "aktif" ? "text-[#F4B948]" : "text-gray-400"
-                                }`}
+                            className={`font-semibold text-base ${
+                                tab === "aktif"
+                                    ? "text-[#222]"
+                                    : "text-gray-400"
+                            }`}
                         >
                             Kos Sekarang
                         </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        className="flex-1 items-center pb-3 pt-2"
+                        className={`flex-1 items-center pb-5 pt-3 ${
+                            tab === "riwayat"
+                                ? "border-b-2 border-[#222] rounded-br-[36px]"
+                                : ""
+                        }`}
                         onPress={() => setTab("riwayat")}
                     >
                         <Text
-                            className={`font-semibold text-base ${tab === "riwayat" ? "text-[#F4B948]" : "text-gray-400"
-                                }`}
+                            className={`font-semibold text-base ${
+                                tab === "riwayat"
+                                    ? "text-[#222]"
+                                    : "text-gray-400"
+                            }`}
                         >
                             Riwayat Kos
                         </Text>
                     </TouchableOpacity>
                 </View>
             </View>
-            <ScrollView>
-
+            <ScrollView className="flex-1 px-6 py-6">
                 {/* Belum punya hunian */}
-                <View className="mb-6">
-                    <Text className="text-base text-gray-700 dark:text-gray-200 mb-3">
+                <View className="my-6">
+                    <Text className="text-2xl text-gray-900 font-bold mb-8 dark:text-gray-200">
                         Kamu belum memiliki Hunian
                     </Text>
-                    <TouchableOpacity className="bg-green-700 rounded-lg py-3 px-6 items-center">
-                        <Text className="text-white font-semibold">Cari Hunian Sekarang</Text>
+                    <TouchableOpacity
+                        onPress={handleGoToExplore}
+                        className="bg-[#222222] rounded-lg py-5 px-6 items-center"
+                    >
+                        <Text className="text-white font-semibold">
+                            Cari Hunian Sekarang
+                        </Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* Rekomendasi Kos */}
-                <Text className="text-base font-semibold text-gray-900 dark:text-white mb-3">
+                <Text className="text-lg font-semibold text-[#222] mt-10 mb-3 dark:text-white">
                     Kost Coliving yang mungkin kamu suka
                 </Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
