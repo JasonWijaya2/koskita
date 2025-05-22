@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { useColorScheme } from "react-native";
 
 export default function TabsLayout() {
@@ -52,12 +53,12 @@ export default function TabsLayout() {
                 }}
             />
             <Tabs.Screen
-                name="favorite"
+                name="mykos"
                 options={{
-                    title: "Favorite",
+                    title: "My Kos",
                     tabBarIcon: ({ color, focused }) => (
-                        <Ionicons
-                            name={focused ? "heart" : "heart-outline"}
+                        <AntDesign
+                            name={focused ? "home" : "home"}
                             color={color}
                             size={20}
                         />
